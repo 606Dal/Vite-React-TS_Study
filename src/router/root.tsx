@@ -1,6 +1,7 @@
 import {Route} from "react-router";
 import {lazy, Suspense} from "react";
 import todoRouter from "./todoRouter.tsx";
+import todoRouter2 from "./todoRouter2.tsx";
 
 const Loading = <div>Loding.....</div>
 
@@ -17,6 +18,7 @@ export default function rootRouter() {
         <Route path={'/'} element={<Suspense fallback={Loading}><Main/></Suspense>}></Route>,
         <Route path={'/about'} element={<Suspense fallback={Loading}><About/></Suspense>}></Route>,
         todoRouter(),
+        todoRouter2(),
 
     ]
 }
