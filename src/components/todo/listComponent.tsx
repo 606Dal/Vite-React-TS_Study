@@ -1,8 +1,9 @@
-import {useNavigate, useSearchParams} from "react-router";
 import {useEffect, useState} from "react";
 import {getTodoList} from "../../api/todoApi.tsx";
 import LoadingComponent from "../common/loadingComponent.tsx";
 import PageComponent from "../common/pageComponent.tsx";
+import useCustomMove from "../../hooks/useCustomMove.tsx";
+//import {debounce} from ""
 
 const initState:PageResponse<Todo> = {
     dtoList: [],
@@ -17,25 +18,41 @@ const initState:PageResponse<Todo> = {
 
 function ListComponent() {
 
-    const [searchParams] = useSearchParams()
-
-    /* 쿼리 스트링으로 들어가는 애들.  ?page= */
-    const pageStr:string|null = searchParams.get("page")
-    const page:number = !pageStr ? 1 : Number(pageStr) // 숫자가 아닌 게 들어오면 NaN
-
-    const sizeStr:string|null = searchParams.get("size")
-    const size:number = !sizeStr ? 10 : Number(sizeStr)
-
+    // const [searchParams] = useSearchParams()
+    //
+    // /* 쿼리 스트링으로 들어가는 애들.  ?page= */
+    // const pageStr:string|null = searchParams.get("page")
+    // const page:number = !pageStr ? 1 : Number(pageStr) // 숫자가 아닌 게 들어오면 NaN
+    //
+    // const sizeStr:string|null = searchParams.get("size")
+    // const size:number = !sizeStr ? 10 : Number(sizeStr)
+    //
     const [serverData, setServerData] = useState(initState)
-    const [loading, setLoading] = useState(false)
+    // const [loading, setLoading] = useState(false)
+    // const [refresh, setRefresh] = useState(false)
+    //
+    // const navigate = useNavigate()
+    //
+    // /* 변수 명 변경 page -> pageParam  */
+    // const moveListPage = (pageParam:number) => {
+    //
+    //     console.log(page, pageParam) // 주소창 값이랑 pageParam 값
+    //     // 동일한 페이지를 호출한다면
+    //     if(page === pageParam) {
+    //         setRefresh(!refresh) // false가 아니라면 true로 바뀜?
+    //     }
+    //
+    //     navigate(`/todo/list?page=${pageParam}&size=${size}`)
+    //
+    // }
+    //
+    // const moveRead = (tno:number|string) => {
+    //
+    //     navigate(`/todo/read/${tno}?page=${page}&size=${size}`)
+    //
+    // }
 
-    const navigate = useNavigate()
-
-    const moveListPage = (page:number) => {
-
-        navigate(`/todo/list?page=${page}`)
-
-    }
+    const {loading, setLoading, refresh, page, size, moveListPage, moveRead} = useCustomMove()
 
     /* 페이지랑 사이즈가 바뀔 때 새로 호출 useEffect */
     useEffect(()=> {
@@ -49,7 +66,7 @@ function ListComponent() {
             })
         }, 1000)
 
-    },[page, size])
+    },[page, size, refresh])
 
     return (
         <div className="border-2 border-blue-100 mt-10 mr-2 ml-2 pb-3">
@@ -65,6 +82,7 @@ function ListComponent() {
                         <li
                             key={todo.tno}
                             className="flex justify-between items-center p-4 border-b last:border-none hover:bg-gray-100"
+                            onClick={() => moveRead(todo.tno || 0)} // 언디파인드 대신 사용 0.
                         >
                             <span className="font-medium text-gray-900">{todo.tno}</span>
                             <span className="font-medium text-gray-900">{todo.title}</span>
