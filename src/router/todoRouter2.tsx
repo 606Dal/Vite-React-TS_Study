@@ -8,12 +8,17 @@ const Loading = <div>Loding.....</div>
 const TodoList2 = lazy(() =>
     import('../pages/todo2/listPage2.tsx'))
 
+const TodoAdd2 = lazy(() =>
+    import('../pages/todo2/addPage2.tsx'))
+
 function TodoRouter2() {
     return (
         <Route path={'/todo2'} element={<TodoIndexPage2/>}>
             <Route index element={<Navigate to={'list2'} replace /> }></Route>
             <Route path={'list2'}
-                   element={<Suspense fallback={Loading}><TodoList2/></Suspense> }></Route>
+                   element={<Suspense fallback={Loading}><TodoList2/></Suspense>}></Route>
+            <Route path={'add2'}
+                   element={<Suspense fallback={Loading}><TodoAdd2/></Suspense>}></Route>
         </Route>
     );
 }
